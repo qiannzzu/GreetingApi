@@ -1,39 +1,39 @@
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
+const path = require('node:path');
+var fs = require('fs');
 
-function getBirthState(userName,gender) {
-    if(gender === 'Male'){
-        return(`Subject: Happy birthday!
-        Happy birthday, dear ${userName}!
-        We offer special discount 20% off for the following items:
-        White Wine, iPhone X
-        `)
-    }else if(gender === 'Female'){
-        return(`Subject: Happy birthday!
-        Happy birthday, dear ${userName}!
-        We offer special discount 50% off for the following items:
-        Cosmetic, LV Handbags
-        `)
-    }else{ //gender cannot be determine
-        return 0;
-    }
+function getAge(year,v) { // get user age
+    var age = year - v.DateOfBirth.getUTCFullYear()
+    return age;
 }
 
 //Get user in specific date birth
 router.get('/getUser', async (req, res) => {
     try {
-        const month = new Date().getMonth();//'1985-08-08'
-        const day = new Date().getDate();//'1985-08-08'
-        const data = await User.find()
+        const year = new Date().getUTCFullYear(); // testcase '2000-12-22'was 50years old of peter
+        const month = new Date().getMonth();
+        const day = new Date().getDate();
+        const data = await User.find() // all user data
         var birthDayUser = [];
         data.map((v)=>{
             if(v.DateOfBirth.getMonth() === month && v.DateOfBirth.getDate() == day){ //if date,month same => birthday
-                var message = getBirthState( v.FirstName,v.Gender)
-                if(message != 0){birthDayUser.push(message)} //have message then push
+                var age = getAge(year,v)
+                if(age>49){
+                    birthDayUser.push(v.FirstName)
+                }
             }
         })
-        res.json(birthDayUser)
+        var message = [];
+        birthDayUser.map((v)=>{
+            message.push(`"title":"Subject: Happy birthday!",
+            "content":"Happy birthday, dear ${v}!",
+            "picurl":"https://storage.googleapis.com/image_carpool_bucket/birthdayGreeting.jpg"
+            `)
+        })
+        
+        res.json(message)
     }
     catch (error) {
         res.status(500).json({ message: error.message })
