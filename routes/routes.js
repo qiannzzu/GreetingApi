@@ -18,8 +18,7 @@ router.get('/getUser', async (req, res) => {
         })
         var birthDayGreet = [];
         birthDayUser.map((v)=>{
-            birthDayGreet.push(`Subject: Happy birthday! 
-            Happy birthday, dear ${v.LastName},${v.FirstName}!`)
+            birthDayGreet.push(`<root><title>Subject: Happy birthday!</title><content>Happy birthday, dear ${v.FirstName}!</content></root>`)
             
         })
         res.json(birthDayGreet)
