@@ -15,8 +15,8 @@ function getName(v) {
 
 
 Users.findBirth = result => {
-  const month = new Date("2000-08-08").getMonth()+1;
-  const date = new Date("2000-08-08").getDate();
+  const month = new Date().getMonth()+1;
+  const date = new Date().getDate();
   const filter = [month,date]
   var birthdayUser = [];
   var msg = [];
